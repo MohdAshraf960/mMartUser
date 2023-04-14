@@ -72,7 +72,7 @@ class Item {
   String unitType;
   int stock;
   String availableDateStarts;
-  int quantity = 1;
+  int quantity = 0;
 
   Item(
       {this.id,

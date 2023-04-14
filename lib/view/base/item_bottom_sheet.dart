@@ -576,7 +576,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                       }
                                     }
                                   },
-                          )),
+                          ),),
                         ]),
                 ]),
               ),

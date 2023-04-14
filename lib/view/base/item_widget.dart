@@ -4,6 +4,7 @@ import 'package:sixam_mart/controller/auth_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/wishlist_controller.dart';
+import 'package:sixam_mart/data/model/response/cart_model.dart';
 
 import 'package:sixam_mart/data/model/response/config_model.dart';
 import 'package:sixam_mart/data/model/response/item_model.dart';
@@ -92,7 +93,7 @@ class ItemWidget extends StatelessWidget {
               }
             }
           }
-          Get.find<ItemController>().navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign);
+          // Get.find<ItemController>().navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign);
         }
       },
       child: Container(
@@ -206,11 +207,10 @@ class ItemWidget extends StatelessWidget {
                         child: Row(children: [
                           QuantityButton(
                             onTap: () {
-                              //TODO: stock
+                              //TODOstock
 
-                              if (item.quantity > 1) {
+                              if (item.quantity > 0) {
                                 itemController.setItemQuantity(item, false, item.stock);
-                                log("DEBUG ${item.quantity.toString()}");
                               }
                             },
                             isIncrement: false,
@@ -225,7 +225,24 @@ class ItemWidget extends StatelessWidget {
                           }),
                           QuantityButton(
                             onTap: () {
-                              log("DEBUG ${item.quantity.toString()}");
+                              log("${item.price}", name: "CART");
+                              //  double _discount = (widget.isCampaign || widget.item.storeDiscount == 0) ? widget.item.discount : widget.item.storeDiscount;
+                              //String _discountType = (widget.isCampaign || widget.item.storeDiscount == 0) ? widget.item.discountType : 'percent';
+                              // double priceWithDiscount = PriceConverter.convertWithDiscount(_price, _discount, _discountType);
+                              // Variation _variation;
+                              // CartModel _cartModel = CartModel(
+                              //   price,
+                              //   discountedPrice,
+                              //   variation,
+                              //   foodVariations,
+                              //   discountAmount,
+                              //   item.quantity,
+                              //   addOnIds,
+                              //   addOns,
+                              //   isCampaign,
+                              //   item.stock,
+                              //   item,
+                              // );
                               itemController.setItemQuantity(item, true, item.stock);
                             },
                             isIncrement: true,
