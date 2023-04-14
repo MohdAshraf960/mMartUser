@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sixam_mart/controller/auth_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
@@ -46,6 +48,7 @@ class ItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     BaseUrls _baseUrls = Get.find<SplashController>().configModel.baseUrls;
     Get.find<ItemController>().initData(item);
+    ItemController itemController = Get.find<ItemController>();
 
     bool _desktop = ResponsiveHelper.isDesktop(context);
     double _discount;
@@ -205,17 +208,18 @@ class ItemWidget extends StatelessWidget {
                             onTap: () {
                               //TODO: stock
 
-                              if (Get.find<ItemController>().quantity > 1) {
-                                Get.find<ItemController>().setQuantity(false, item.stock);
+                              if (itemController.quantity > 1) {
+                                itemController.setQuantity(false, item.stock);
+                                log("DEBUG ${itemController.quantity.toString()}");
                               }
                             },
                             isIncrement: false,
                           ),
-                          Text(Get.find<ItemController>().quantity.toString(), style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                          Text(itemController.quantity.toString(), style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
                           QuantityButton(
                             onTap: () {
-                              print("DEBUG");
-                              Get.find<ItemController>().setQuantity(true, item.stock);
+                              log("DEBUG ${itemController.quantity.toString()}");
+                              itemController.setQuantity(true, item.stock);
                             },
                             isIncrement: true,
                           ),
