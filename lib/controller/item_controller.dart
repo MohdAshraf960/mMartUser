@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/data/api/api_checker.dart';
@@ -34,7 +36,7 @@ class ItemController extends GetxController implements GetxService {
   static List<String> _itemTypeList = ['all', 'veg', 'non_veg'];
   int _imageIndex = 0;
   int _cartIndex = -1;
-  Item _item;
+  Item _item = Item();
   int _productSelect = 0;
   int _imageSliderIndex = 0;
 
@@ -221,6 +223,20 @@ class ItemController extends GetxController implements GetxService {
       }
     } else {
       _quantity = _quantity - 1;
+    }
+    update();
+  }
+
+  void setItemQuantity(Item item, bool isIncrement, int stock) {
+    log("${item.quantity}");
+    if (isIncrement) {
+      if (Get.find<SplashController>().configModel.moduleConfig.module.stock && _quantity >= stock) {
+        showCustomSnackBar('out_of_stock'.tr);
+      } else {
+        item.quantity = item.quantity + 1;
+      }
+    } else {
+      item.quantity = item.quantity - 1;
     }
     update();
   }
