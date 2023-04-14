@@ -208,18 +208,25 @@ class ItemWidget extends StatelessWidget {
                             onTap: () {
                               //TODO: stock
 
-                              if (itemController.quantity > 1) {
-                                itemController.setQuantity(false, item.stock);
-                                log("DEBUG ${itemController.quantity.toString()}");
+                              if (item.quantity > 1) {
+                                itemController.setItemQuantity(item, false, item.stock);
+                                log("DEBUG ${item.quantity.toString()}");
                               }
                             },
                             isIncrement: false,
                           ),
-                          Text(itemController.quantity.toString(), style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                          GetBuilder<ItemController>(builder: (itemController) {
+                            return Text(
+                              "${item.quantity.toString()}",
+                              style: robotoMedium.copyWith(
+                                fontSize: Dimensions.fontSizeLarge,
+                              ),
+                            );
+                          }),
                           QuantityButton(
                             onTap: () {
-                              log("DEBUG ${itemController.quantity.toString()}");
-                              itemController.setQuantity(true, item.stock);
+                              log("DEBUG ${item.quantity.toString()}");
+                              itemController.setItemQuantity(item, true, item.stock);
                             },
                             isIncrement: true,
                           ),
