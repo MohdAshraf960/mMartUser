@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
+import 'package:sixam_mart/controller/store_controller.dart';
 import 'package:sixam_mart/data/api/api_checker.dart';
 import 'package:sixam_mart/data/model/body/review_body.dart';
 import 'package:sixam_mart/data/model/response/cart_model.dart';
@@ -36,7 +35,7 @@ class ItemController extends GetxController implements GetxService {
   static List<String> _itemTypeList = ['all', 'veg', 'non_veg'];
   int _imageIndex = 0;
   int _cartIndex = -1;
-  Item _item = Item();
+  Item _item;
   int _productSelect = 0;
   int _imageSliderIndex = 0;
 
@@ -56,6 +55,8 @@ class ItemController extends GetxController implements GetxService {
   Item get item => _item;
   int get productSelect => _productSelect;
   int get imageSliderIndex => _imageSliderIndex;
+
+  int localQuantity = 0;
 
   CartController cartController = Get.find<CartController>();
 
@@ -154,7 +155,16 @@ class ItemController extends GetxController implements GetxService {
       } else {
         item.choiceOptions.forEach((element) => _variationIndex.add(0));
       }
-      _quantity = 1;
+      if (item != null) {
+        if (item.quantity.isGreaterThan(1)) {
+          _quantity = item.quantity;
+        } else {
+          _quantity = 1;
+        }
+      } else {
+        _quantity = 1;
+      }
+
       item.addOns.forEach((addOn) {
         _addOnActiveList.add(false);
         _addOnQtyList.add(1);
@@ -165,7 +175,7 @@ class ItemController extends GetxController implements GetxService {
 
   int setExistInCart(Item item, {bool notify = false}) {
     String variationType = '';
-    if (!Get.find<SplashController>().getModuleConfig(Get.find<SplashController>().module.moduleType).newVariation) {
+    if (!Get.find<SplashController>().getModuleConfig(Get.find<SplashController>().module?.moduleType).newVariation) {
       List<String> _variationList = [];
       for (int index = 0; index < item.choiceOptions.length; index++) {
         _variationList.add(item.choiceOptions[index].options[_variationIndex[index]].replaceAll(' ', ''));
@@ -239,7 +249,7 @@ class ItemController extends GetxController implements GetxService {
     } else {
       item.quantity = item.quantity - 1;
     }
-    log("${item.quantity}");
+
     update();
   }
 
@@ -423,19 +433,49 @@ class ItemController extends GetxController implements GetxService {
 
   String getDiscountType(Item item) => item.storeDiscount == 0 ? item.discountType : 'percent';
 
-  void navigateToItemPage(Item item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
+  Future<int> navigateToItemPage(Item item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
+    List<Item> storeItems = Get.find<StoreController>().storeItemModel.items;
+
     if (Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText || item.moduleType == 'food') {
       ResponsiveHelper.isMobile(context)
-          ? Get.bottomSheet(
-              ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
-              backgroundColor: Colors.transparent,
-              isScrollControlled: true,
-            )
+          ? Get.bottomSheet(ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
+                  backgroundColor: Colors.transparent, isScrollControlled: true, isDismissible: false)
+              .then((value) {
+              int index = storeItems.indexWhere((store) => store.id == item.id);
+              if (value != null) {
+                localQuantity = value;
+                storeItems[index].quantity = value;
+              } else {
+                localQuantity = 0;
+                storeItems[index].quantity = 0;
+              }
+
+              update();
+            })
           : Get.dialog(
-              Dialog(child: ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign)),
-            );
+                  Dialog(
+                    child: ItemBottomSheet(
+                      item: item,
+                      inStorePage: inStore,
+                      isCampaign: isCampaign,
+                    ),
+                  ),
+                  barrierDismissible: false)
+              .then((value) {
+              int index = storeItems.indexWhere((store) => store.id == item.id);
+              if (value != null) {
+                localQuantity = value;
+                storeItems[index].quantity = value;
+              } else {
+                localQuantity = 0;
+                storeItems[index].quantity = 0;
+              }
+              update();
+            });
     } else {
       Get.toNamed(RouteHelper.getItemDetailsRoute(item.id, inStore), arguments: ItemDetailsScreen(item: item, inStorePage: inStore));
     }
+
+    return Future.value(localQuantity);
   }
 }
