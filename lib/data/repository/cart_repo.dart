@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:sixam_mart/data/model/response/cart_model.dart';
 import 'package:sixam_mart/util/app_constants.dart';
@@ -31,7 +31,6 @@ class CartRepo {
   }
 
   Future<void> addToCartList(List<CartModel> cartProductList) async {
-    log("cartProductList ==> $cartProductList", name: "cartProductList");
     List<String> carts = [];
 
     List<CartModel> newCart = await addDuplicates(cartProductList);
