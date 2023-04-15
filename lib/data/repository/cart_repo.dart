@@ -16,7 +16,17 @@ class CartRepo {
       carts = sharedPreferences.getStringList(AppConstants.CART_LIST);
     }
     List<CartModel> cartList = [];
-    carts.forEach((cart) => cartList.add(CartModel.fromJson(jsonDecode(cart))));
+    carts.forEach(
+      (cart) => cartList.add(
+        CartModel.fromJson(
+          jsonDecode(cart),
+        ),
+      ),
+    );
+    addDuplicates(cartList).then((value) => cartList = value).catchError((_) {
+      debugPrint("$_");
+    });
+
     return cartList;
   }
 

@@ -25,6 +25,7 @@ import 'package:sixam_mart/view/screens/store/widget/store_description_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../base/title_widget.dart';
 import '../home/theme1/banner_view1.dart';
 import '../home/theme1/category_view1.dart';
 import 'widget/bottom_cart_widget.dart';
@@ -227,83 +228,95 @@ class _StoreScreenState extends State<StoreScreen> {
                         ),
                       ),
                       //----------- add category ---------->
-                      (storeController.categoryList.length > 0)
-                          ? SliverPersistentHeader(
-                              pinned: true,
-                              delegate: SliverDelegate(
-                                child: Center(
-                                  child: Container(
-                                    height: 50,
-                                    width: Dimensions.WEB_MAX_WIDTH,
-                                    color: Theme.of(context).cardColor,
-                                    padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: storeController.categoryList.length,
-                                      padding: EdgeInsets.only(left: Dimensions.PADDING_SIZE_SMALL),
-                                      physics: BouncingScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        return InkWell(
-                                          onTap: () => storeController.setCategoryIndex(index),
-                                          child: Container(
-                                            padding: EdgeInsets.only(
-                                              left: index == 0 ? Dimensions.PADDING_SIZE_LARGE : Dimensions.PADDING_SIZE_SMALL,
-                                              right: index == storeController.categoryList.length - 1 ? Dimensions.PADDING_SIZE_LARGE : Dimensions.PADDING_SIZE_SMALL,
-                                              top: Dimensions.PADDING_SIZE_SMALL,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.horizontal(
-                                                left: Radius.circular(
-                                                  _ltr
-                                                      ? index == 0
-                                                          ? Dimensions.RADIUS_EXTRA_LARGE
-                                                          : 0
-                                                      : index == storeController.categoryList.length - 1
-                                                          ? Dimensions.RADIUS_EXTRA_LARGE
-                                                          : 0,
-                                                ),
-                                                right: Radius.circular(
-                                                  _ltr
-                                                      ? index == storeController.categoryList.length - 1
-                                                          ? Dimensions.RADIUS_EXTRA_LARGE
-                                                          : 0
-                                                      : index == 0
-                                                          ? Dimensions.RADIUS_EXTRA_LARGE
-                                                          : 0,
-                                                ),
-                                              ),
-                                              color: Theme.of(context).primaryColor.withOpacity(0.1),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  storeController.categoryList[index].name,
-                                                  style: index == storeController.categoryIndex
-                                                      ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor)
-                                                      : robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
-                                                ),
-                                                index == storeController.categoryIndex
-                                                    ? Container(
-                                                        height: 5,
-                                                        width: 5,
-                                                        decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
-                                                      )
-                                                    : SizedBox(
-                                                        height: 5,
-                                                        width: 5,
-                                                      ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          : SliverToBoxAdapter(child: SizedBox()),
+                      // (storeController.categoryList.length > 0)
+                      //     ? SliverPersistentHeader(
+                      //         pinned: true,
+                      //         delegate: SliverDelegate(
+                      //           child: Center(
+                      //             child: Container(
+                      //                 //  height: 80,
+                      //                 width: Dimensions.WEB_MAX_WIDTH,
+                      //                 color: Theme.of(context).cardColor,
+                      //                 padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                      //                 child: Column(
+                      //                   children: [
+                      //                     Padding(
+                      //                       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      //                       child: TitleWidget(title: 'categories'.tr, onTap: () => Get.toNamed(RouteHelper.getCategoryRoute())),
+                      //                     ),
+                      //                   ],
+                      //                 )
+
+                      // ListView.builder(
+                      //   scrollDirection: Axis.horizontal,
+                      //   itemCount: storeController.categoryList.length,
+                      //   padding: EdgeInsets.only(left: Dimensions.PADDING_SIZE_SMALL),
+                      //   physics: BouncingScrollPhysics(),
+                      //   itemBuilder: (context, index) {
+                      //     return InkWell(
+                      //       onTap: () => storeController.setCategoryIndex(index),
+                      //       child: Container(
+                      //         padding: EdgeInsets.only(
+                      //           left: index == 0 ? Dimensions.PADDING_SIZE_LARGE : Dimensions.PADDING_SIZE_SMALL,
+                      //           right: index == storeController.categoryList.length - 1 ? Dimensions.PADDING_SIZE_LARGE : Dimensions.PADDING_SIZE_SMALL,
+                      //           top: Dimensions.PADDING_SIZE_SMALL,
+                      //         ),
+                      //         decoration: BoxDecoration(
+                      //           borderRadius: BorderRadius.horizontal(
+                      //             left: Radius.circular(
+                      //               _ltr
+                      //                   ? index == 0
+                      //                       ? Dimensions.RADIUS_EXTRA_LARGE
+                      //                       : 0
+                      //                   : index == storeController.categoryList.length - 1
+                      //                       ? Dimensions.RADIUS_EXTRA_LARGE
+                      //                       : 0,
+                      //             ),
+                      //             right: Radius.circular(
+                      //               _ltr
+                      //                   ? index == storeController.categoryList.length - 1
+                      //                       ? Dimensions.RADIUS_EXTRA_LARGE
+                      //                       : 0
+                      //                   : index == 0
+                      //                       ? Dimensions.RADIUS_EXTRA_LARGE
+                      //                       : 0,
+                      //             ),
+                      //           ),
+                      //           color: Theme.of(context).primaryColor.withOpacity(0.1),
+                      //         ),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.center,
+                      //           children: [
+                      //             Text(
+                      //               storeController.categoryList[index].name,
+                      //               style: index == storeController.categoryIndex
+                      //                   ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).primaryColor)
+                      //                   : robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+                      //             ),
+                      //             index == storeController.categoryIndex
+                      //                 ? Container(
+                      //                     height: 5,
+                      //                     width: 5,
+                      //                     decoration: BoxDecoration(color: Theme.of(context).primaryColor, shape: BoxShape.circle),
+                      //                   )
+                      //                 : SizedBox(
+                      //                     height: 5,
+                      //                     width: 5,
+                      //                   ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+
+                      //                 ),
+                      //           ),
+                      //         ),
+                      //       )
+                      //     : SliverToBoxAdapter(
+                      //         child: SizedBox(),
+                      //       ),
                       SliverToBoxAdapter(
                         child: FooterView(
                           child: Container(
