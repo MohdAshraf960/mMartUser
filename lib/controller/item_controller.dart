@@ -433,8 +433,11 @@ class ItemController extends GetxController implements GetxService {
 
   String getDiscountType(Item item) => item.storeDiscount == 0 ? item.discountType : 'percent';
 
-  Future<int> navigateToItemPage(Item item, BuildContext context, {bool inStore = false, bool isCampaign = false}) {
-    List<Item> storeItems = Get.find<StoreController>().storeItemModel.items;
+  Future<int> navigateToItemPage(Item item, BuildContext context, {bool inStore = false, bool isCampaign = false, bool isPopular = false}) {
+    List<Item> storeItems = [];
+    if (Get.find<StoreController>().storeItemModel != null) {
+      storeItems = Get.find<StoreController>().storeItemModel.items;
+    }
 
     if (Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText || item.moduleType == 'food') {
       ResponsiveHelper.isMobile(context)
@@ -444,10 +447,16 @@ class ItemController extends GetxController implements GetxService {
               int index = storeItems.indexWhere((store) => store.id == item.id);
               if (value != null) {
                 localQuantity = value;
-                storeItems[index].quantity = value;
+                if (storeItems.isNotEmpty && inStore) {
+                  storeItems[index].quantity = value;
+                }
+                setPopularAndReviewList(isPopular, value, item);
               } else {
                 localQuantity = 0;
-                storeItems[index].quantity = 0;
+                if (storeItems.isNotEmpty && inStore) {
+                  storeItems[index].quantity = 0;
+                }
+                setPopularAndReviewList(isPopular, 0, item);
               }
 
               update();
@@ -465,10 +474,14 @@ class ItemController extends GetxController implements GetxService {
               int index = storeItems.indexWhere((store) => store.id == item.id);
               if (value != null) {
                 localQuantity = value;
-                storeItems[index].quantity = value;
+                if (storeItems.isNotEmpty) {
+                  storeItems[index].quantity = value;
+                }
               } else {
                 localQuantity = 0;
-                storeItems[index].quantity = 0;
+                if (storeItems.isNotEmpty) {
+                  storeItems[index].quantity = 0;
+                }
               }
               update();
             });
@@ -477,5 +490,23 @@ class ItemController extends GetxController implements GetxService {
     }
 
     return Future.value(localQuantity);
+  }
+
+  setStoreList(bool inStore, int value, Item item) {}
+
+  setPopularAndReviewList(bool isPopular, int value, Item item) {
+    int index = isPopular
+        ? popularItemList.indexWhere(
+            (store) => store.id == item.id,
+          )
+        : reviewedItemList.indexWhere(
+            (store) => store.id == item.id,
+          );
+
+    if (isPopular) {
+      popularItemList[index].quantity = value;
+    } else {
+      reviewedItemList[index].quantity = value;
+    }
   }
 }
