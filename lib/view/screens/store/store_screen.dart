@@ -2,7 +2,6 @@ import 'package:flutter/rendering.dart';
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/category_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
-import 'package:sixam_mart/controller/localization_controller.dart';
 import 'package:sixam_mart/controller/store_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/data/model/response/category_model.dart';
@@ -25,7 +24,6 @@ import 'package:sixam_mart/view/screens/store/widget/store_description_view.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../base/title_widget.dart';
 import '../home/theme1/banner_view1.dart';
 import '../home/theme1/category_view1.dart';
 import 'widget/bottom_cart_widget.dart';
@@ -41,7 +39,7 @@ class StoreScreen extends StatefulWidget {
 
 class _StoreScreenState extends State<StoreScreen> {
   final ScrollController scrollController = ScrollController();
-  final bool _ltr = Get.find<LocalizationController>().isLtr;
+
   final itemController = Get.find<ItemController>();
 
   @override

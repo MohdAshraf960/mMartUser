@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sixam_mart/controller/auth_controller.dart';
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
@@ -140,7 +142,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
           SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
               InkWell(
-                  onTap: () => Get.back(),
+                  onTap: () => Get.back(result: itemController.quantity),
                   child: Padding(
                     padding: EdgeInsets.only(right: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                     child: Icon(Icons.close),
@@ -479,10 +481,10 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                           ),
                           SizedBox(width: Dimensions.PADDING_SIZE_SMALL),
                           Expanded(
-                              child: CustomButton(
-                            width: ResponsiveHelper.isDesktop(context) ? MediaQuery.of(context).size.width / 2.0 : null,
-                            // added from me
-                            /*
+                            child: CustomButton(
+                              width: ResponsiveHelper.isDesktop(context) ? MediaQuery.of(context).size.width / 2.0 : null,
+                              // added from me
+                              /*
                                          buttonText: widget.isCampaign
                                         ? 'order_now'.tr
                                         : (widget.cart != null ||
@@ -494,89 +496,90 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                                 ? 'update_in_cart'.tr
                                                 : 'add_to_cart'.tr,
                                          */
-                            //end
-                            /*buttonText: widget.isCampaign ? 'order_now'.tr : isExistInCart ? 'already_added_in_cart'.tr : fromCart
+                              //end
+                              /*buttonText: widget.isCampaign ? 'order_now'.tr : isExistInCart ? 'already_added_in_cart'.tr : fromCart
                         ? 'update_in_cart'.tr : 'add_to_cart'.tr,*/
-                            buttonText: (Get.find<SplashController>().configModel.moduleConfig.module.stock && _stock <= 0)
-                                ? 'out_of_stock'.tr
-                                : widget.isCampaign
-                                    ? 'order_now'.tr
-                                    : (widget.cart != null || itemController.cartIndex != -1)
-                                        ? 'update_in_cart'.tr
-                                        : 'add_to_cart'.tr,
-                            onPressed: (Get.find<SplashController>().configModel.moduleConfig.module.stock && _stock <= 0)
-                                ? null
-                                : () {
-                                    String _invalid;
-                                    if (_newVariation) {
-                                      for (int index = 0; index < widget.item.foodVariations.length; index++) {
-                                        if (!widget.item.foodVariations[index].multiSelect &&
-                                            widget.item.foodVariations[index].required &&
-                                            !itemController.selectedVariations[index].contains(true)) {
-                                          _invalid = '${'choose_a_variation_from'.tr} ${widget.item.foodVariations[index].name}';
-                                          break;
-                                        } else if (widget.item.foodVariations[index].multiSelect &&
-                                            (widget.item.foodVariations[index].required || itemController.selectedVariations[index].contains(true)) &&
-                                            widget.item.foodVariations[index].min > itemController.selectedVariationLength(itemController.selectedVariations, index)) {
-                                          _invalid = '${'you_need_to_select_minimum'.tr} ${widget.item.foodVariations[index].min} '
-                                              '${'to_maximum'.tr} ${widget.item.foodVariations[index].max} ${'options_from'.tr}'
-                                              ' ${widget.item.foodVariations[index].name} ${'variation'.tr}';
-                                          break;
+                              buttonText: (Get.find<SplashController>().configModel.moduleConfig.module.stock && _stock <= 0)
+                                  ? 'out_of_stock'.tr
+                                  : widget.isCampaign
+                                      ? 'order_now'.tr
+                                      : (widget.cart != null || itemController.cartIndex != -1)
+                                          ? 'update_in_cart'.tr
+                                          : 'add_to_cart'.tr,
+                              onPressed: (Get.find<SplashController>().configModel.moduleConfig.module.stock && _stock <= 0)
+                                  ? null
+                                  : () {
+                                      String _invalid;
+                                      if (_newVariation) {
+                                        for (int index = 0; index < widget.item.foodVariations.length; index++) {
+                                          if (!widget.item.foodVariations[index].multiSelect &&
+                                              widget.item.foodVariations[index].required &&
+                                              !itemController.selectedVariations[index].contains(true)) {
+                                            _invalid = '${'choose_a_variation_from'.tr} ${widget.item.foodVariations[index].name}';
+                                            break;
+                                          } else if (widget.item.foodVariations[index].multiSelect &&
+                                              (widget.item.foodVariations[index].required || itemController.selectedVariations[index].contains(true)) &&
+                                              widget.item.foodVariations[index].min > itemController.selectedVariationLength(itemController.selectedVariations, index)) {
+                                            _invalid = '${'you_need_to_select_minimum'.tr} ${widget.item.foodVariations[index].min} '
+                                                '${'to_maximum'.tr} ${widget.item.foodVariations[index].max} ${'options_from'.tr}'
+                                                ' ${widget.item.foodVariations[index].name} ${'variation'.tr}';
+                                            break;
+                                          }
                                         }
                                       }
-                                    }
 
-                                    if (_invalid != null) {
-                                      showCustomSnackBar(_invalid, getXSnackBar: true);
-                                    } else {
-                                      Get.back();
-                                      CartModel _cartModel = CartModel(
-                                        _price,
-                                        priceWithDiscount,
-                                        _variation != null ? [_variation] : [],
-                                        itemController.selectedVariations,
-                                        (_price - PriceConverter.convertWithDiscount(_price, _discount, _discountType)),
-                                        itemController.quantity,
-                                        _addOnIdList,
-                                        _addOnsList,
-                                        widget.isCampaign,
-                                        _stock,
-                                        widget.item,
-                                      );
-                                      if (widget.isCampaign) {
-                                        Get.toNamed(RouteHelper.getCheckoutRoute('campaign'),
-                                            arguments: CheckoutScreen(
-                                              storeId: null,
-                                              fromCart: false,
-                                              cartList: [_cartModel],
-                                            ));
+                                      if (_invalid != null) {
+                                        showCustomSnackBar(_invalid, getXSnackBar: true);
                                       } else {
-                                        if (Get.find<CartController>().existAnotherStoreItem(_cartModel.item.storeId, Get.find<SplashController>().module.id)) {
-                                          Get.dialog(
-                                              ConfirmationDialog(
-                                                icon: Images.warning,
-                                                title: 'are_you_sure_to_reset'.tr,
-                                                description: Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText
-                                                    ? 'if_you_continue'.tr
-                                                    : 'if_you_continue_without_another_store'.tr,
-                                                onYesPressed: () {
-                                                  Get.back();
-                                                  Get.find<CartController>().removeAllAndAddToCart(_cartModel);
-                                                  showCartSnackBar(context);
-                                                },
-                                              ),
-                                              barrierDismissible: false);
+                                        Get.back();
+                                        CartModel _cartModel = CartModel(
+                                          _price,
+                                          priceWithDiscount,
+                                          _variation != null ? [_variation] : [],
+                                          itemController.selectedVariations,
+                                          (_price - PriceConverter.convertWithDiscount(_price, _discount, _discountType)),
+                                          itemController.quantity,
+                                          _addOnIdList,
+                                          _addOnsList,
+                                          widget.isCampaign,
+                                          _stock,
+                                          widget.item,
+                                        );
+                                        if (widget.isCampaign) {
+                                          Get.toNamed(RouteHelper.getCheckoutRoute('campaign'),
+                                              arguments: CheckoutScreen(
+                                                storeId: null,
+                                                fromCart: false,
+                                                cartList: [_cartModel],
+                                              ));
                                         } else {
-                                          Get.find<CartController>().addToCart(
-                                            _cartModel,
-                                            widget.cartIndex != null ? widget.cartIndex : itemController.cartIndex,
-                                          );
-                                          showCartSnackBar(context);
+                                          if (Get.find<CartController>().existAnotherStoreItem(_cartModel.item.storeId, Get.find<SplashController>().module.id)) {
+                                            Get.dialog(
+                                                ConfirmationDialog(
+                                                  icon: Images.warning,
+                                                  title: 'are_you_sure_to_reset'.tr,
+                                                  description: Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText
+                                                      ? 'if_you_continue'.tr
+                                                      : 'if_you_continue_without_another_store'.tr,
+                                                  onYesPressed: () {
+                                                    Get.back();
+                                                    Get.find<CartController>().removeAllAndAddToCart(_cartModel);
+                                                    showCartSnackBar(context);
+                                                  },
+                                                ),
+                                                barrierDismissible: false);
+                                          } else {
+                                            Get.find<CartController>().addToCart(
+                                              _cartModel,
+                                              widget.cartIndex != null ? widget.cartIndex : itemController.cartIndex,
+                                            );
+                                            showCartSnackBar(context);
+                                          }
                                         }
                                       }
-                                    }
-                                  },
-                          ),),
+                                    },
+                            ),
+                          ),
                         ]),
                 ]),
               ),
