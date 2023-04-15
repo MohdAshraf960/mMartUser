@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/store_controller.dart';
