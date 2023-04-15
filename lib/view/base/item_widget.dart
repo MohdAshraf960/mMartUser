@@ -223,8 +223,7 @@ class ItemWidget extends StatelessWidget {
                                 QuantityButton(
                                   onTap: () async {
                                     itemController.setItemQuantity(item, true, item.stock);
-                                    int local = await Get.find<ItemController>().navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign);
-                                    log("$local", name: "local");
+                                    await Get.find<ItemController>().navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign);
                                   },
                                   isIncrement: true,
                                 ),
