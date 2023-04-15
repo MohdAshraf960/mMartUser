@@ -57,6 +57,8 @@ class ItemController extends GetxController implements GetxService {
   int get productSelect => _productSelect;
   int get imageSliderIndex => _imageSliderIndex;
 
+  CartController cartController = Get.find<CartController>();
+
   Future<void> getPopularItemList(bool reload, String type, bool notify) async {
     _popularType = type;
     if (reload) {
@@ -228,7 +230,6 @@ class ItemController extends GetxController implements GetxService {
   }
 
   void setItemQuantity(Item item, bool isIncrement, int stock) {
-    log("${item.quantity}");
     if (isIncrement) {
       if (Get.find<SplashController>().configModel.moduleConfig.module.stock && _quantity >= stock) {
         showCustomSnackBar('out_of_stock'.tr);
@@ -238,6 +239,7 @@ class ItemController extends GetxController implements GetxService {
     } else {
       item.quantity = item.quantity - 1;
     }
+    log("${item.quantity}");
     update();
   }
 

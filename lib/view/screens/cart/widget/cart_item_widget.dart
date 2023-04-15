@@ -81,8 +81,9 @@ class CartItemWidget extends StatelessWidget {
               : showDialog(
                   context: context,
                   builder: (con) => Dialog(
-                        child: ItemBottomSheet(item: cart.item, cartIndex: cartIndex, cart: cart),
-                      ));
+                    child: ItemBottomSheet(item: cart.item, cartIndex: cartIndex, cart: cart),
+                  ),
+                );
         },
         child: Container(
           decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL)),

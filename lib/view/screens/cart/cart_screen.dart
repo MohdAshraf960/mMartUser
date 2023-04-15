@@ -30,7 +30,8 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: 'my_cart'.tr, backButton: (ResponsiveHelper.isDesktop(context) || !widget.fromNav)),
-      endDrawer: MenuDrawer(),endDrawerEnableOpenDragGesture: false,
+      endDrawer: MenuDrawer(),
+      endDrawerEnableOpenDragGesture: false,
       body: GetBuilder<CartController>(
         builder: (cartController) {
           // List<List<AddOns>> _addOnsList = [];
@@ -59,82 +60,94 @@ class _CartScreenState extends State<CartScreen> {
           // });
           // double _subTotal = _itemPrice + _addOns;
 
-          return cartController.cartList.length > 0 ? Column(
-            children: [
+          return cartController.cartList.length > 0
+              ? Column(
+                  children: [
+                    Expanded(
+                      child: Scrollbar(
+                        child: SingleChildScrollView(
+                          padding: ResponsiveHelper.isDesktop(context)
+                              ? EdgeInsets.only(
+                                  top: Dimensions.PADDING_SIZE_SMALL,
+                                )
+                              : EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                          physics: BouncingScrollPhysics(),
+                          child: FooterView(
+                            child: SizedBox(
+                              width: Dimensions.WEB_MAX_WIDTH,
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                // Product
+                                WebConstrainedBox(
+                                  dataLength: cartController.cartList.length,
+                                  minLength: 5,
+                                  minHeight: 0.6,
+                                  child: ListView.builder(
+                                    physics: NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: cartController.cartList.length,
+                                    itemBuilder: (context, index) {
+                                      return CartItemWidget(
+                                        cart: cartController.cartList[index],
+                                        cartIndex: index,
+                                        addOns: cartController.addOnsList[index],
+                                        isAvailable: cartController.availableList[index],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
 
-              Expanded(
-                child: Scrollbar(
-                  child: SingleChildScrollView(
-                    padding: ResponsiveHelper.isDesktop(context) ? EdgeInsets.only(
-                      top: Dimensions.PADDING_SIZE_SMALL,
-                    ) : EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-                    physics: BouncingScrollPhysics(),
-                    child: FooterView(
-                      child: SizedBox(
-                        width: Dimensions.WEB_MAX_WIDTH,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                // Total
+                                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                                  Text('item_price'.tr, style: robotoRegular),
+                                  Text(PriceConverter.convertPrice(cartController.itemPrice), style: robotoRegular),
+                                ]),
+                                SizedBox(height: Get.find<SplashController>().configModel.moduleConfig.module.addOn ? 10 : 0),
 
-                          // Product
-                          WebConstrainedBox(
-                            dataLength: cartController.cartList.length, minLength: 5, minHeight: 0.6,
-                            child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: cartController.cartList.length,
-                              itemBuilder: (context, index) {
-                                return CartItemWidget(cart: cartController.cartList[index], cartIndex: index, addOns: cartController.addOnsList[index], isAvailable: cartController.availableList[index]);
-                              },
+                                Get.find<SplashController>().configModel.moduleConfig.module.addOn
+                                    ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('addons'.tr, style: robotoRegular),
+                                          Text('(+) ${PriceConverter.convertPrice(cartController.addOns)}', style: robotoRegular),
+                                        ],
+                                      )
+                                    : SizedBox(),
+
+                                Get.find<SplashController>().configModel.moduleConfig.module.addOn
+                                    ? Padding(
+                                        padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
+                                        child: Divider(thickness: 1, color: Theme.of(context).hintColor.withOpacity(0.5)),
+                                      )
+                                    : SizedBox(),
+
+                                Get.find<SplashController>().configModel.moduleConfig.module.addOn
+                                    ? Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('subtotal'.tr, style: robotoMedium),
+                                          Text(PriceConverter.convertPrice(cartController.subTotal), style: robotoMedium),
+                                        ],
+                                      )
+                                    : SizedBox(),
+
+                                ResponsiveHelper.isDesktop(context)
+                                    ? CheckoutButton(cartController: cartController, availableList: cartController.availableList)
+                                    : SizedBox.shrink(),
+                              ]),
                             ),
                           ),
-                          SizedBox(height: Dimensions.PADDING_SIZE_SMALL),
-
-                          // Total
-                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text('item_price'.tr, style: robotoRegular),
-                            Text(PriceConverter.convertPrice(cartController.itemPrice), style: robotoRegular),
-                          ]),
-                          SizedBox(height: Get.find<SplashController>().configModel.moduleConfig.module.addOn ? 10 : 0),
-
-                          Get.find<SplashController>().configModel.moduleConfig.module.addOn ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('addons'.tr, style: robotoRegular),
-                              Text('(+) ${PriceConverter.convertPrice(cartController.addOns)}', style: robotoRegular),
-                            ],
-                          ) : SizedBox(),
-
-                          Get.find<SplashController>().configModel.moduleConfig.module.addOn ? Padding(
-                            padding: EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_SMALL),
-                            child: Divider(thickness: 1, color: Theme.of(context).hintColor.withOpacity(0.5)),
-                          ) : SizedBox(),
-
-                          Get.find<SplashController>().configModel.moduleConfig.module.addOn ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('subtotal'.tr, style: robotoMedium),
-                              Text(PriceConverter.convertPrice(cartController.subTotal), style: robotoMedium),
-                            ],
-                          ) : SizedBox(),
-
-                          ResponsiveHelper.isDesktop(context) ? CheckoutButton(cartController: cartController, availableList: cartController.availableList) : SizedBox.shrink(),
-
-
-                        ]),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-
-              ResponsiveHelper.isDesktop(context) ? SizedBox.shrink() : CheckoutButton(cartController: cartController, availableList: cartController.availableList),
-
-            ],
-          ) : NoDataScreen(isCart: true, text: '', showFooter: true);
+                    ResponsiveHelper.isDesktop(context) ? SizedBox.shrink() : CheckoutButton(cartController: cartController, availableList: cartController.availableList),
+                  ],
+                )
+              : NoDataScreen(isCart: true, text: '', showFooter: true);
         },
       ),
     );
   }
-
 }
 
 class CheckoutButton extends StatelessWidget {
@@ -147,26 +160,29 @@ class CheckoutButton extends StatelessWidget {
     return Container(
       width: Dimensions.WEB_MAX_WIDTH,
       padding: ResponsiveHelper.isDesktop(context) ? EdgeInsets.symmetric(vertical: Dimensions.PADDING_SIZE_LARGE) : EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
-      child: CustomButton(buttonText: 'proceed_to_checkout'.tr, onPressed: () {
-        /*if(Get.find<SplashController>().module == null) {
+      child: CustomButton(
+          buttonText: 'proceed_to_checkout'.tr,
+          onPressed: () {
+            /*if(Get.find<SplashController>().module == null) {
           showCustomSnackBar('choose_a_module_first'.tr);
-        }else */if(!cartController.cartList.first.item.scheduleOrder && availableList.contains(false)) {
-          showCustomSnackBar('one_or_more_product_unavailable'.tr);
-        } else {
-          if(Get.find<SplashController>().module == null) {
-            int i = 0;
-            for(i = 0; i < Get.find<SplashController>().moduleList.length; i++){
-              if(cartController.cartList[0].item.moduleId == Get.find<SplashController>().moduleList[i].id){
-                break;
+        }else */
+            if (!cartController.cartList.first.item.scheduleOrder && availableList.contains(false)) {
+              showCustomSnackBar('one_or_more_product_unavailable'.tr);
+            } else {
+              if (Get.find<SplashController>().module == null) {
+                int i = 0;
+                for (i = 0; i < Get.find<SplashController>().moduleList.length; i++) {
+                  if (cartController.cartList[0].item.moduleId == Get.find<SplashController>().moduleList[i].id) {
+                    break;
+                  }
+                }
+                Get.find<SplashController>().setModule(Get.find<SplashController>().moduleList[i]);
               }
-            }
-            Get.find<SplashController>().setModule(Get.find<SplashController>().moduleList[i]);
-          }
-          Get.find<CouponController>().removeCouponData(false);
+              Get.find<CouponController>().removeCouponData(false);
 
-          Get.toNamed(RouteHelper.getCheckoutRoute('cart'));
-        }
-      }),
+              Get.toNamed(RouteHelper.getCheckoutRoute('cart'));
+            }
+          }),
     );
   }
 }
