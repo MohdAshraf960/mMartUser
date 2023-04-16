@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:sixam_mart/controller/cart_controller.dart';
+import 'package:sixam_mart/controller/category_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/store_controller.dart';
 import 'package:sixam_mart/data/api/api_checker.dart';
@@ -433,8 +436,16 @@ class ItemController extends GetxController implements GetxService {
 
   String getDiscountType(Item item) => item.storeDiscount == 0 ? item.discountType : 'percent';
 
-  Future<int> navigateToItemPage(Item item, BuildContext context, {bool inStore = false, bool isCampaign = false, bool isPopular = false}) {
+  Future<int> navigateToItemPage(
+    Item item,
+    BuildContext context, {
+    bool inStore = false,
+    bool isCampaign = false,
+    bool isPopular = false,
+    bool fromCategory = false,
+  }) {
     List<Item> storeItems = [];
+
     if (Get.find<StoreController>().storeItemModel != null) {
       storeItems = Get.find<StoreController>().storeItemModel.items;
     }
@@ -444,20 +455,30 @@ class ItemController extends GetxController implements GetxService {
           ? Get.bottomSheet(ItemBottomSheet(item: item, inStorePage: inStore, isCampaign: isCampaign),
                   backgroundColor: Colors.transparent, isScrollControlled: true, isDismissible: false)
               .then((value) {
+              log("$value", name: "BOTTOM SHEET");
               int index = storeItems.indexWhere((store) => store.id == item.id);
+
               if (value != null) {
                 localQuantity = value;
                 if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = value;
                 } else {
-                  setPopularAndReviewList(isPopular, value, item);
+                  if (fromCategory) {
+                    setCategoryList(value, item);
+                  } else {
+                    setPopularAndReviewList(isPopular, value, item);
+                  }
                 }
               } else {
                 localQuantity = 0;
                 if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = 0;
                 } else {
-                  setPopularAndReviewList(isPopular, 0, item);
+                  if (fromCategory) {
+                    setCategoryList(0, item);
+                  } else {
+                    setPopularAndReviewList(isPopular, 0, item);
+                  }
                 }
               }
 
@@ -476,13 +497,25 @@ class ItemController extends GetxController implements GetxService {
               int index = storeItems.indexWhere((store) => store.id == item.id);
               if (value != null) {
                 localQuantity = value;
-                if (storeItems.isNotEmpty) {
+                if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = value;
+                } else {
+                  if (fromCategory) {
+                    setCategoryList(value, item);
+                  } else {
+                    setPopularAndReviewList(isPopular, value, item);
+                  }
                 }
               } else {
                 localQuantity = 0;
-                if (storeItems.isNotEmpty) {
+                if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = 0;
+                } else {
+                  if (fromCategory) {
+                    setCategoryList(0, item);
+                  } else {
+                    setPopularAndReviewList(isPopular, 0, item);
+                  }
                 }
               }
               update();
@@ -509,6 +542,15 @@ class ItemController extends GetxController implements GetxService {
       popularItemList[index].quantity = value;
     } else {
       reviewedItemList[index].quantity = value;
+    }
+
+    update();
+  }
+
+  setCategoryList(int value, Item item) {
+    if (Get.find<CategoryController>().categoryItemList != null) {
+      int index = Get.find<CategoryController>().categoryItemList.indexWhere((store) => store.id == item.id);
+      Get.find<CategoryController>().categoryItemList[index].quantity = value;
     }
   }
 }

@@ -31,6 +31,8 @@ class ItemWidget extends StatelessWidget {
   final bool inStore;
   final bool isCampaign;
   final bool isFeatured;
+  final bool isPopular;
+  final bool fromCategory;
   ItemWidget(
       {@required this.item,
       @required this.isStore,
@@ -39,7 +41,9 @@ class ItemWidget extends StatelessWidget {
       @required this.length,
       this.inStore = false,
       this.isCampaign = false,
-      this.isFeatured = false});
+      this.isFeatured = false,
+      this.isPopular,
+      this.fromCategory});
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +226,8 @@ class ItemWidget extends StatelessWidget {
                                 QuantityButton(
                                   onTap: () async {
                                     itemController.setItemQuantity(item, true, item.stock);
-                                    await Get.find<ItemController>().navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign);
+                                    await Get.find<ItemController>()
+                                        .navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign, isPopular: isPopular, fromCategory: fromCategory);
                                   },
                                   isIncrement: true,
                                 ),
