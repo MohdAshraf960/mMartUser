@@ -449,14 +449,16 @@ class ItemController extends GetxController implements GetxService {
                 localQuantity = value;
                 if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = value;
+                } else {
+                  setPopularAndReviewList(isPopular, value, item);
                 }
-                setPopularAndReviewList(isPopular, value, item);
               } else {
                 localQuantity = 0;
                 if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = 0;
+                } else {
+                  setPopularAndReviewList(isPopular, 0, item);
                 }
-                setPopularAndReviewList(isPopular, 0, item);
               }
 
               update();

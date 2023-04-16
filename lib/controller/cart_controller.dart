@@ -96,21 +96,8 @@ class CartController extends GetxController implements GetxService {
       _cartList.add(cartModel);
     }
     Get.find<ItemController>().setExistInCart(cartModel.item, notify: true);
-    //  _allCartList.add(cartModel);
-    //  localList = addDuplicateItems(_allCartList);
+
     localList = addDuplicateItems(_cartList);
-
-    // log("LOCAL LIST ==> ${localList.map((e) {
-    //   return {"id": e.item.id, "quantity": e.quantity};
-    // }).toList()}");
-
-    // log("_cartList ==> ${_cartList.map((e) {
-    //   return {"id": e.item.id, "quantity": e.quantity};
-    // }).toList()}");
-
-    // log("_allCartList ==> ${_allCartList.map((e) {
-    //   return {"id": e.item.id, "quantity": e.quantity};
-    // }).toList()}");
 
     cartRepo.addToCartList(localList);
     calculationCart();
