@@ -24,6 +24,8 @@ class ItemsView extends StatefulWidget {
   final String type;
   final bool isFeatured;
   final bool showTheme1Store;
+  final bool isPopular;
+  final bool fromCategory;
   final Function(String type) onVegFilterTap;
   ItemsView(
       {@required this.stores,
@@ -38,7 +40,9 @@ class ItemsView extends StatefulWidget {
       this.type,
       this.onVegFilterTap,
       this.isFeatured = false,
-      this.showTheme1Store = false});
+      this.showTheme1Store = false,
+      this.isPopular = false,
+      this.fromCategory = false});
 
   @override
   State<ItemsView> createState() => _ItemsViewState();
@@ -62,7 +66,12 @@ class _ItemsViewState extends State<ItemsView> {
     }
 
     return Column(children: [
-      widget.type != null ? VegFilterWidget(type: widget.type, onSelected: widget.onVegFilterTap) : SizedBox(),
+      widget.type != null
+          ? VegFilterWidget(
+              type: widget.type,
+              onSelected: widget.onVegFilterTap,
+            )
+          : SizedBox(),
       !_isNull
           ? _length > 0
               ? GridView.builder(
@@ -89,6 +98,8 @@ class _ItemsViewState extends State<ItemsView> {
                             inStore: widget.inStorePage,
                           )
                         : ItemWidget(
+                            fromCategory: widget.fromCategory,
+                            isPopular: widget.isPopular,
                             isStore: widget.isStore,
                             item: widget.isStore ? null : widget.items[index],
                             isFeatured: widget.isFeatured,
@@ -128,7 +139,11 @@ class _ItemsViewState extends State<ItemsView> {
               itemBuilder: (context, index) {
                 return widget.showTheme1Store
                     ? StoreShimmer(isEnable: _isNull)
-                    : ItemShimmer(isEnabled: _isNull, isStore: widget.isStore, hasDivider: index != widget.shimmerLength - 1);
+                    : ItemShimmer(
+                        isEnabled: _isNull,
+                        isStore: widget.isStore,
+                        hasDivider: index != widget.shimmerLength - 1,
+                      );
               },
             ),
     ]);

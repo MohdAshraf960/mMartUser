@@ -140,7 +140,9 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
           SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
               InkWell(
-                  onTap: () => Get.back(result: itemController.quantity),
+                  onTap: () {
+                    Get.back(result: itemController.quantity);
+                  },
                   child: Padding(
                     padding: EdgeInsets.only(right: Dimensions.PADDING_SIZE_EXTRA_SMALL),
                     child: Icon(Icons.close),
@@ -295,7 +297,12 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                         },
                         isIncrement: false,
                       ),
-                      Text(itemController.quantity.toString(), style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge)),
+                      Text(
+                        itemController.quantity.toString(),
+                        style: robotoMedium.copyWith(
+                          fontSize: Dimensions.fontSizeLarge,
+                        ),
+                      ),
                       QuantityButton(
                         onTap: () => itemController.setQuantity(true, _stock),
                         isIncrement: true,

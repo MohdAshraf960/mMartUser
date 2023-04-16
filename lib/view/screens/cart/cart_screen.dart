@@ -29,7 +29,11 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'my_cart'.tr, backButton: (ResponsiveHelper.isDesktop(context) || !widget.fromNav)),
+      appBar: CustomAppBar(
+        title: 'my_cart'.tr,
+        backButton: (ResponsiveHelper.isDesktop(context) || !widget.fromNav),
+        // showDelete: true,
+      ),
       endDrawer: MenuDrawer(),
       endDrawerEnableOpenDragGesture: false,
       body: GetBuilder<CartController>(

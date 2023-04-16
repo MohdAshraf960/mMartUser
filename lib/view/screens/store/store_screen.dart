@@ -220,6 +220,55 @@ class _StoreScreenState extends State<StoreScreen> {
                                       ]),
                                     )
                                   : SizedBox(),
+                              // Container(
+                              //   margin: EdgeInsets.only(top: 12),
+                              //   width: double.infinity,
+                              //   child: TextField(
+                              //     onTap: () {
+                              //       Get.toNamed(RouteHelper.getSearchStoreItemRoute(_store.id));
+                              //     },
+                              //     readOnly: true,
+                              //     style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                              //     textInputAction: TextInputAction.search,
+                              //     cursorColor: Theme.of(context).primaryColor,
+                              //     textAlignVertical: TextAlignVertical.center,
+                              //     decoration: InputDecoration(
+                              //       hintText: 'search_item_in_store'.tr,
+                              //       hintStyle: robotoRegular.copyWith(
+                              //         fontSize: Dimensions.fontSizeLarge,
+                              //         color: Theme.of(context).hintColor,
+                              //       ),
+                              //       isDense: true,
+                              //       contentPadding: EdgeInsets.all(Dimensions.PADDING_SIZE_SMALL),
+                              //       border: OutlineInputBorder(
+                              //         borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL),
+                              //         borderSide: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.3), width: 1),
+                              //       ),
+                              //       enabledBorder: OutlineInputBorder(
+                              //         borderRadius: BorderRadius.circular(
+                              //           Dimensions.RADIUS_SMALL,
+                              //         ),
+                              //         borderSide: BorderSide(
+                              //           color: Theme.of(context).primaryColor.withOpacity(0.3),
+                              //           width: 1,
+                              //         ),
+                              //       ),
+                              //       suffixIcon: Icon(Icons.search, color: Theme.of(context).hintColor, size: 25),
+                              //     ),
+                              //   ),
+
+                              //   // IconButton(
+                              //   //   onPressed: () => Get.toNamed(RouteHelper.getSearchStoreItemRoute(_store.id)),
+                              //   //   icon: Container(
+                              //   //     height: 50,
+                              //   //     width: 50,
+                              //   //     decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+                              //   //     alignment: Alignment.center,
+                              //   //     child: Icon(Icons.search, size: 20, color: Theme.of(context).cardColor),
+                              //   //   ),
+                              //   // ),
+                              // ),
+
                               CategoryView1()
                             ]),
                           ),
