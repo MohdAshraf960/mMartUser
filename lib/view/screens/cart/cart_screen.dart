@@ -32,7 +32,7 @@ class _CartScreenState extends State<CartScreen> {
       appBar: CustomAppBar(
         title: 'my_cart'.tr,
         backButton: (ResponsiveHelper.isDesktop(context) || !widget.fromNav),
-        // showDelete: true,
+        showDelete: true,
       ),
       endDrawer: MenuDrawer(),
       endDrawerEnableOpenDragGesture: false,
