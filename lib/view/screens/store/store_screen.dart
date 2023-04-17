@@ -159,16 +159,16 @@ class _StoreScreenState extends State<StoreScreen> {
                                 ),*/
                                   ),
                               actions: [
-                                IconButton(
-                                  onPressed: () => Get.toNamed(RouteHelper.getSearchStoreItemRoute(_store.id)),
-                                  icon: Container(
-                                    height: 50,
-                                    width: 50,
-                                    decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColor),
-                                    alignment: Alignment.center,
-                                    child: Icon(Icons.search, size: 20, color: Theme.of(context).cardColor),
-                                  ),
-                                ),
+                                // IconButton(
+                                //   onPressed: () => Get.toNamed(RouteHelper.getSearchStoreItemRoute(_store.id)),
+                                //   icon: Container(
+                                //     height: 50,
+                                //     width: 50,
+                                //     decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColor),
+                                //     alignment: Alignment.center,
+                                //     child: Icon(Icons.search, size: 20, color: Theme.of(context).cardColor),
+                                //   ),
+                                // ),
                               ],
                             ),
                       SliverToBoxAdapter(
