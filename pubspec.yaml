@@ -51,7 +51,7 @@ dependencies:
   google_sign_in_web: ^0.10.2
   flutter_facebook_auth: ^5.0.1
   flutter_launcher_icons: ^0.11.0
-  flutter_cashfree_pg_sdk: ^2.0.10+13
+  # flutter_cashfree_pg_sdk: ^2.0.10+13
 
 dependency_overrides:
   modal_bottom_sheet:
