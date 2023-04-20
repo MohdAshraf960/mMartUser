@@ -536,7 +536,7 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                       if (_invalid != null) {
                                         showCustomSnackBar(_invalid, getXSnackBar: true);
                                       } else {
-                                        Get.back();
+                                        Get.back(result: itemController.quantity);
                                         CartModel _cartModel = CartModel(
                                           _price,
                                           priceWithDiscount,
@@ -551,12 +551,14 @@ class _ItemBottomSheetState extends State<ItemBottomSheet> {
                                           widget.item,
                                         );
                                         if (widget.isCampaign) {
-                                          Get.toNamed(RouteHelper.getCheckoutRoute('campaign'),
-                                              arguments: CheckoutScreen(
-                                                storeId: null,
-                                                fromCart: false,
-                                                cartList: [_cartModel],
-                                              ));
+                                          Get.toNamed(
+                                            RouteHelper.getCheckoutRoute('campaign'),
+                                            arguments: CheckoutScreen(
+                                              storeId: null,
+                                              fromCart: false,
+                                              cartList: [_cartModel],
+                                            ),
+                                          );
                                         } else {
                                           if (Get.find<CartController>().existAnotherStoreItem(_cartModel.item.storeId, Get.find<SplashController>().module.id)) {
                                             Get.dialog(

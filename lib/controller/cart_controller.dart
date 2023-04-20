@@ -118,7 +118,7 @@ class CartController extends GetxController implements GetxService {
 
     localList = addDuplicateItems(_cartList);
     cartRepo.addToCartList(localList);
-
+    Get.find<ItemController>().setAllItems();
     calculationCart();
 
     update();
@@ -131,6 +131,7 @@ class CartController extends GetxController implements GetxService {
       Get.find<ItemController>().setExistInCart(Get.find<ItemController>().item, notify: true);
     }
     calculationCart();
+    Get.find<ItemController>().setAllItems();
     update();
   }
 
@@ -145,6 +146,7 @@ class CartController extends GetxController implements GetxService {
     _cartList = [];
     cartRepo.addToCartList(_cartList);
     calculationCart();
+    Get.find<ItemController>().setAllItems();
     update();
   }
 

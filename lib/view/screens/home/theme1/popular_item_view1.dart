@@ -1,3 +1,4 @@
+import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/theme_controller.dart';
@@ -162,12 +163,23 @@ class PopularItemView1 extends StatelessWidget {
                                               QuantityButton(
                                                 isIncrement: false,
                                                 onTap: () {
+                                                  CartController cartController = Get.find<CartController>();
                                                   if (_itemList[index].quantity > 0) {
+                                                    int cartIndex = cartController.cartList.indexWhere(
+                                                      (element) => element.item.id == _itemList[index].id,
+                                                    );
                                                     itemController.setItemQuantity(
                                                       _itemList[index],
                                                       false,
                                                       _itemList[index].stock,
                                                     );
+                                                    if (cartIndex > -1) {
+                                                      if (cartController.cartList[cartIndex].quantity > 1) {
+                                                        cartController.setQuantity(false, cartIndex, cartController.cartList[cartIndex].quantity);
+                                                      } else {
+                                                        cartController.removeFromCart(cartIndex);
+                                                      }
+                                                    }
                                                   }
                                                 },
                                               ),

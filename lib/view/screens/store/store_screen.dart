@@ -68,6 +68,8 @@ class _StoreScreenState extends State<StoreScreen> {
         }
       }
     });
+
+    // checkInCart();
   }
 
   @override
