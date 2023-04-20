@@ -32,7 +32,7 @@ class _CartScreenState extends State<CartScreen> {
       appBar: CustomAppBar(
         title: 'my_cart'.tr,
         backButton: (ResponsiveHelper.isDesktop(context) || !widget.fromNav),
-        // showDelete: true,
+        showDelete: true,
       ),
       endDrawer: MenuDrawer(),
       endDrawerEnableOpenDragGesture: false,
@@ -54,7 +54,7 @@ class _CartScreenState extends State<CartScreen> {
           //     }
           //   });
           //   _addOnsList.add(_addOnList);
-          //
+          //adb shell pm list package
           //   _availableList.add(DateConverter.isAvailable(cartModel.item.availableTimeStarts, cartModel.item.availableTimeEnds));
           //
           //   for(int index=0; index<_addOnList.length; index++) {

@@ -18,7 +18,12 @@ class CartItemWidget extends StatelessWidget {
   final int cartIndex;
   final List<AddOns> addOns;
   final bool isAvailable;
-  CartItemWidget({@required this.cart, @required this.cartIndex, @required this.isAvailable, @required this.addOns});
+  CartItemWidget({
+    @required this.cart,
+    @required this.cartIndex,
+    @required this.isAvailable,
+    @required this.addOns,
+  });
 
   @override
   Widget build(BuildContext context) {

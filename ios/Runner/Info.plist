@@ -84,5 +84,8 @@
     </array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>LSApplicationCategoryType</key>
+<string></string>
+
 </dict>
 </plist>

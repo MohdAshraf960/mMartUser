@@ -17,6 +17,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sixam_mart/view/base/custom_snackbar.dart';
 import 'package:sixam_mart/view/screens/home/home_screen.dart';
 
+import 'cart_controller.dart';
+
 class StoreController extends GetxController implements GetxService {
   final StoreRepo storeRepo;
   StoreController({@required this.storeRepo});
@@ -59,14 +61,11 @@ class StoreController extends GetxController implements GetxService {
   bool get showFavButton => _showFavButton;
   List<XFile> get pickedPrescriptions => _pickedPrescriptions;
 
-  void pickPrescriptionImage(
-      {@required bool isRemove, @required bool isCamera}) async {
+  void pickPrescriptionImage({@required bool isRemove, @required bool isCamera}) async {
     if (isRemove) {
       _pickedPrescriptions = [];
     } else {
-      XFile _xFile = await ImagePicker().pickImage(
-          source: isCamera ? ImageSource.camera : ImageSource.gallery,
-          imageQuality: 50);
+      XFile _xFile = await ImagePicker().pickImage(source: isCamera ? ImageSource.camera : ImageSource.gallery, imageQuality: 50);
       if (_xFile != null) {
         _pickedPrescriptions.add(_xFile);
       }
@@ -121,8 +120,7 @@ class StoreController extends GetxController implements GetxService {
     getStoreList(1, true);
   }
 
-  Future<void> getPopularStoreList(
-      bool reload, String type, bool notify) async {
+  Future<void> getPopularStoreList(bool reload, String type, bool notify) async {
     _type = type;
     if (reload) {
       _popularStoreList = null;
@@ -134,8 +132,7 @@ class StoreController extends GetxController implements GetxService {
       Response response = await storeRepo.getPopularStoreList(type);
       if (response.statusCode == 200) {
         _popularStoreList = [];
-        response.body
-            .forEach((store) => _popularStoreList.add(Store.fromJson(store)));
+        response.body.forEach((store) => _popularStoreList.add(Store.fromJson(store)));
       } else {
         ApiChecker.checkApi(response);
       }
@@ -155,8 +152,7 @@ class StoreController extends GetxController implements GetxService {
       Response response = await storeRepo.getLatestStoreList(type);
       if (response.statusCode == 200) {
         _latestStoreList = [];
-        response.body
-            .forEach((store) => _latestStoreList.add(Store.fromJson(store)));
+        response.body.forEach((store) => _latestStoreList.add(Store.fromJson(store)));
       } else {
         ApiChecker.checkApi(response);
       }
@@ -202,9 +198,7 @@ class StoreController extends GetxController implements GetxService {
   }
 
   void initCheckoutData(int storeID) {
-    if (_store == null ||
-        _store.id != storeID ||
-        Get.find<OrderController>().distance == null) {
+    if (_store == null || _store.id != storeID || Get.find<OrderController>().distance == null) {
       Get.find<CouponController>().removeCouponData(false);
       Get.find<OrderController>().clearPrevData(null);
       Get.find<StoreController>().getStoreDetails(Store(id: storeID), false);
@@ -226,10 +220,8 @@ class StoreController extends GetxController implements GetxService {
         Get.find<OrderController>().initializeTimeSlot(_store);
         Get.find<OrderController>().getDistanceInKM(
           LatLng(
-            double.parse(
-                Get.find<LocationController>().getUserAddress().latitude),
-            double.parse(
-                Get.find<LocationController>().getUserAddress().longitude),
+            double.parse(Get.find<LocationController>().getUserAddress().latitude),
+            double.parse(Get.find<LocationController>().getUserAddress().longitude),
           ),
           LatLng(double.parse(_store.latitude), double.parse(_store.longitude)),
         );
@@ -256,8 +248,7 @@ class StoreController extends GetxController implements GetxService {
     return _store;
   }
 
-  Future<void> getStoreItemList(
-      int storeID, int offset, String type, bool notify) async {
+  Future<void> getStoreItemList(int storeID, int offset, String type, bool notify) async {
     if (offset == 1 || _storeItemModel == null) {
       _type = type;
       _storeItemModel = null;
@@ -268,9 +259,7 @@ class StoreController extends GetxController implements GetxService {
     Response response = await storeRepo.getStoreItemList(
       storeID,
       offset,
-      (_store != null && _store.categoryIds.length > 0 && _categoryIndex != 0)
-          ? _categoryList[_categoryIndex].id
-          : 0,
+      (_store != null && _store.categoryIds.length > 0 && _categoryIndex != 0) ? _categoryList[_categoryIndex].id : 0,
       type,
     );
     if (response.statusCode == 200) {
@@ -281,14 +270,48 @@ class StoreController extends GetxController implements GetxService {
         _storeItemModel.totalSize = ItemModel.fromJson(response.body).totalSize;
         _storeItemModel.offset = ItemModel.fromJson(response.body).offset;
       }
+      checkInCartForStoreItemModel();
     } else {
       ApiChecker.checkApi(response);
     }
     update();
   }
 
-  Future<void> getStoreSearchItemList(
-      String searchText, String storeID, int offset, String type) async {
+  checkInCartForStoreItemModel() {
+    CartController cartController = Get.find<CartController>();
+    final Map<int, int> cartQuantities = {};
+    for (final cartItem in cartController.cartList) {
+      cartQuantities[cartItem.item.id] = cartItem.quantity;
+    }
+
+    if (storeItemModel != null) {
+      for (final item in storeItemModel.items) {
+        final cartQuantity = cartQuantities[item.id];
+        if (cartQuantity != null) {
+          item.quantity = cartQuantity;
+        }
+      }
+    }
+  }
+
+  checkInCartForSearchStoreItemModel() {
+    CartController cartController = Get.find<CartController>();
+    final Map<int, int> cartQuantities = {};
+    for (final cartItem in cartController.cartList) {
+      cartQuantities[cartItem.item.id] = cartItem.quantity;
+    }
+
+    if (storeSearchItemModel != null) {
+      for (final item in storeSearchItemModel.items) {
+        final cartQuantity = cartQuantities[item.id];
+        if (cartQuantity != null) {
+          item.quantity = cartQuantity;
+        }
+      }
+    }
+  }
+
+  Future<void> getStoreSearchItemList(String searchText, String storeID, int offset, String type) async {
     if (searchText.isEmpty) {
       showCustomSnackBar('write_item_name'.tr);
     } else {
@@ -298,19 +321,16 @@ class StoreController extends GetxController implements GetxService {
         _storeSearchItemModel = null;
         update();
       }
-      Response response = await storeRepo.getStoreSearchItemList(
-          searchText, storeID, offset, type);
+      Response response = await storeRepo.getStoreSearchItemList(searchText, storeID, offset, type);
       if (response.statusCode == 200) {
         if (offset == 1) {
           _storeSearchItemModel = ItemModel.fromJson(response.body);
         } else {
-          _storeSearchItemModel.items
-              .addAll(ItemModel.fromJson(response.body).items);
-          _storeSearchItemModel.totalSize =
-              ItemModel.fromJson(response.body).totalSize;
-          _storeSearchItemModel.offset =
-              ItemModel.fromJson(response.body).offset;
+          _storeSearchItemModel.items.addAll(ItemModel.fromJson(response.body).items);
+          _storeSearchItemModel.totalSize = ItemModel.fromJson(response.body).totalSize;
+          _storeSearchItemModel.offset = ItemModel.fromJson(response.body).offset;
         }
+        checkInCartForSearchStoreItemModel();
       } else {
         ApiChecker.checkApi(response);
       }
@@ -335,8 +355,7 @@ class StoreController extends GetxController implements GetxService {
     Response response = await storeRepo.getStoreReviewList(storeID);
     if (response.statusCode == 200) {
       _storeReviewList = [];
-      response.body.forEach(
-          (review) => _storeReviewList.add(ReviewModel.fromJson(review)));
+      response.body.forEach((review) => _storeReviewList.add(ReviewModel.fromJson(review)));
     } else {
       ApiChecker.checkApi(response);
     }
@@ -372,9 +391,7 @@ class StoreController extends GetxController implements GetxService {
       _weekday = 0;
     }
     for (int index = 0; index < schedules.length; index++) {
-      if (_weekday == schedules[index].day &&
-          DateConverter.isAvailable(
-              schedules[index].openingTime, schedules[index].closingTime)) {
+      if (_weekday == schedules[index].day && DateConverter.isAvailable(schedules[index].openingTime, schedules[index].closingTime)) {
         return true;
       }
     }
@@ -383,9 +400,7 @@ class StoreController extends GetxController implements GetxService {
 
   bool isOpenNow(Store store) => store.open == 1 && store.active;
 
-  double getDiscount(Store store) =>
-      store.discount != null ? store.discount.discount : 0;
+  double getDiscount(Store store) => store.discount != null ? store.discount.discount : 0;
 
-  String getDiscountType(Store store) =>
-      store.discount != null ? store.discount.discountType : 'percent';
+  String getDiscountType(Store store) => store.discount != null ? store.discount.discountType : 'percent';
 }

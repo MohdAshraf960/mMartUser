@@ -76,6 +76,7 @@ class ItemController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _popularItemList = [];
         _popularItemList.addAll(ItemModel.fromJson(response.body).items);
+
         _isLoading = false;
       } else {
         ApiChecker.checkApi(response);
@@ -97,6 +98,7 @@ class ItemController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _reviewedItemList = [];
         _reviewedItemList.addAll(ItemModel.fromJson(response.body).items);
+
         _isLoading = false;
       } else {
         ApiChecker.checkApi(response);
@@ -462,6 +464,16 @@ class ItemController extends GetxController implements GetxService {
                 localQuantity = value;
                 if (storeItems.isNotEmpty && inStore) {
                   storeItems[index].quantity = value;
+                  final Map<int, int> cartQuantities = {};
+                  for (final cartItem in cartController.cartList) {
+                    cartQuantities[cartItem.item.id] = cartItem.quantity;
+                  }
+                  for (final storeItem in storeItems) {
+                    final cartQuantity = cartQuantities[storeItem.id];
+                    if (cartQuantity != null) {
+                      storeItem.quantity = cartQuantity;
+                    }
+                  }
                 } else {
                   if (fromCategory) {
                     setCategoryList(value, item);
@@ -481,7 +493,7 @@ class ItemController extends GetxController implements GetxService {
                   }
                 }
               }
-
+              setAllItems();
               update();
             })
           : Get.dialog(
@@ -518,6 +530,9 @@ class ItemController extends GetxController implements GetxService {
                   }
                 }
               }
+
+              checkCartForPopularList();
+              checkCartForReviewList();
               update();
             });
     } else {
@@ -540,8 +555,10 @@ class ItemController extends GetxController implements GetxService {
 
     if (isPopular) {
       popularItemList[index].quantity = value;
+      checkCartForPopularList();
     } else {
       reviewedItemList[index].quantity = value;
+      checkCartForReviewList();
     }
 
     update();
@@ -551,6 +568,94 @@ class ItemController extends GetxController implements GetxService {
     if (Get.find<CategoryController>().categoryItemList != null) {
       int index = Get.find<CategoryController>().categoryItemList.indexWhere((store) => store.id == item.id);
       Get.find<CategoryController>().categoryItemList[index].quantity = value;
+      final Map<int, int> cartQuantities = {};
+      for (final cartItem in cartController.cartList) {
+        cartQuantities[cartItem.item.id] = cartItem.quantity;
+      }
+
+      for (final popularItem in Get.find<CategoryController>().categoryItemList) {
+        final cartQuantity = cartQuantities[popularItem.id];
+        if (cartQuantity != null) {
+          popularItem.quantity = cartQuantity;
+        }
+      }
     }
+  }
+
+  checkCartForPopularList() {
+    final Map<int, int> cartQuantities = {};
+    for (final cartItem in cartController.cartList) {
+      cartQuantities[cartItem.item.id] = cartItem.quantity;
+    }
+
+    for (final popularItem in _popularItemList) {
+      final cartQuantity = cartQuantities[popularItem.id];
+      if (cartQuantity != null) {
+        popularItem.quantity = cartQuantity;
+      } else {
+        popularItem.quantity = 0;
+      }
+    }
+  }
+
+  checkCartForReviewList() {
+    final Map<int, int> cartQuantities = {};
+    for (final cartItem in cartController.cartList) {
+      cartQuantities[cartItem.item.id] = cartItem.quantity;
+    }
+
+    for (final reviewedItem in _reviewedItemList) {
+      final cartQuantity = cartQuantities[reviewedItem.id];
+      if (cartQuantity != null) {
+        reviewedItem.quantity = cartQuantity;
+      } else {
+        reviewedItem.quantity = 0;
+      }
+    }
+  }
+
+  checkCartForStoreItems() {
+    StoreController storeController = Get.find<StoreController>();
+    final Map<int, int> cartQuantities = {};
+    if (storeController.storeItemModel != null) {
+      for (final cartItem in cartController.cartList) {
+        cartQuantities[cartItem.item.id] = cartItem.quantity;
+      }
+
+      for (final item in storeController.storeItemModel.items) {
+        final cartQuantity = cartQuantities[item.id];
+        if (cartQuantity != null) {
+          item.quantity = cartQuantity;
+        } else {
+          item.quantity = 0;
+        }
+      }
+    }
+  }
+
+  checkCartForSearchStoreItems() {
+    StoreController storeController = Get.find<StoreController>();
+    final Map<int, int> cartQuantities = {};
+    if (storeController.storeSearchItemModel != null) {
+      for (final cartItem in cartController.cartList) {
+        cartQuantities[cartItem.item.id] = cartItem.quantity;
+      }
+
+      for (final item in storeController.storeSearchItemModel.items) {
+        final cartQuantity = cartQuantities[item.id];
+        if (cartQuantity != null) {
+          item.quantity = cartQuantity;
+        } else {
+          item.quantity = 0;
+        }
+      }
+    }
+  }
+
+  setAllItems() {
+    checkCartForPopularList();
+    checkCartForReviewList();
+    checkCartForStoreItems();
+    checkCartForSearchStoreItems();
   }
 }

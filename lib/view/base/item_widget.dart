@@ -1,4 +1,5 @@
 import 'package:sixam_mart/controller/auth_controller.dart';
+import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/wishlist_controller.dart';
@@ -208,9 +209,20 @@ class ItemWidget extends StatelessWidget {
                             ? Row(children: [
                                 QuantityButton(
                                   onTap: () {
-                                    //TODOstock
+                                    CartController cartController = Get.find<CartController>();
                                     if (item.quantity > 0) {
+                                      int cartIndex = cartController.cartList.indexWhere(
+                                        (element) => element.item.id == item.id,
+                                      );
+
                                       itemController.setItemQuantity(item, false, item.stock);
+                                      if (cartIndex > -1) {
+                                        if (cartController.cartList[cartIndex].quantity > 1) {
+                                          cartController.setQuantity(false, cartIndex, cartController.cartList[cartIndex].quantity);
+                                        } else {
+                                          cartController.removeFromCart(cartIndex);
+                                        }
+                                      }
                                     }
                                   },
                                   isIncrement: false,
@@ -225,9 +237,15 @@ class ItemWidget extends StatelessWidget {
                                 }),
                                 QuantityButton(
                                   onTap: () async {
-                                    itemController.setItemQuantity(item, true, item.stock);
-                                    await Get.find<ItemController>()
-                                        .navigateToItemPage(item, context, inStore: inStore, isCampaign: isCampaign, isPopular: isPopular, fromCategory: fromCategory);
+                                    //  itemController.setItemQuantity(item, true, item.stock);
+                                    await Get.find<ItemController>().navigateToItemPage(
+                                      item,
+                                      context,
+                                      inStore: inStore,
+                                      isCampaign: isCampaign,
+                                      isPopular: isPopular,
+                                      fromCategory: fromCategory,
+                                    );
                                   },
                                   isIncrement: true,
                                 ),

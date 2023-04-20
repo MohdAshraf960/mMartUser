@@ -71,10 +71,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ? SizedBox()
                         : cartController.cartList.isEmpty
                             ? SizedBox()
-                            : IconButton(
-                                onPressed: () {
-                                  cartController.clearCartList();
-                                },
+                            : TextButton.icon(
+                                label: Text("Clear Cart"),
+                                onPressed: () => cartController.clearCartList(),
                                 icon: Icon(
                                   Icons.delete,
                                   color: Theme.of(context).primaryColor,
