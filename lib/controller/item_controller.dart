@@ -30,7 +30,7 @@ class ItemController extends GetxController implements GetxService {
   bool _isLoading = false;
   List<int> _variationIndex;
   List<List<bool>> _selectedVariations = [];
-  int _quantity = 1;
+  int _quantity = 0;
   List<bool> _addOnActiveList = [];
   List<int> _addOnQtyList = [];
   String _popularType = 'all';

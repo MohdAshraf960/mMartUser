@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:sixam_mart/util/html_type.dart';
 import 'package:sixam_mart/view/base/custom_snackbar.dart';
 import 'package:sixam_mart/view/screens/home/home_screen.dart';
+import 'dart:developer';
 
 class SplashController extends GetxController implements GetxService {
   final SplashRepo splashRepo;
@@ -56,9 +57,9 @@ class SplashController extends GetxController implements GetxService {
     bool _isSuccess = false;
     if (response.statusCode == 200) {
       _data = response.body;
-      print("_data=============================> $_data");
+      log("_data=============================> $_data");
       _configModel = ConfigModel.fromJson(response.body);
-      print("_configModel=============================> $_configModel");
+      log("_configModel=============================> $_configModel");
 
       if (_configModel.module != null) {
         setModule(_configModel.module);
@@ -105,8 +106,7 @@ class SplashController extends GetxController implements GetxService {
     splashRepo.setModule(module);
     if (module != null) {
       splashRepo.setCacheModule(module);
-      _configModel.moduleConfig.module =
-          Module.fromJson(_data['module_config'][module.moduleType]);
+      _configModel.moduleConfig.module = Module.fromJson(_data['module_config'][module.moduleType]);
       Get.find<CartController>().getCartData();
     }
     if (Get.find<AuthController>().isLoggedIn()) {
@@ -162,8 +162,7 @@ Future<void> getModules({Map<String, String> headers}) async {
 
     if (response.statusCode == 200) {
       _moduleList = [];
-      response.body
-          .forEach((module) => _moduleList.add(ModuleModel.fromJson(module)));
+      response.body.forEach((module) => _moduleList.add(ModuleModel.fromJson(module)));
     } else {
       ApiChecker.checkApi(response);
     }
@@ -204,9 +203,7 @@ Future<void> getModules({Map<String, String> headers}) async {
     _htmlText = null;
     Response response = await splashRepo.getHtmlText(htmlType);
     if (response.statusCode == 200) {
-      if (htmlType == HtmlType.SHIPPING_POLICY ||
-          htmlType == HtmlType.CANCELATION ||
-          htmlType == HtmlType.REFUND) {
+      if (htmlType == HtmlType.SHIPPING_POLICY || htmlType == HtmlType.CANCELATION || htmlType == HtmlType.REFUND) {
         _htmlText = response.body['value'];
       } else {
         _htmlText = response.body;
