@@ -588,12 +588,14 @@ class ItemController extends GetxController implements GetxService {
       cartQuantities[cartItem.item.id] = cartItem.quantity;
     }
 
-    for (final popularItem in _popularItemList) {
-      final cartQuantity = cartQuantities[popularItem.id];
-      if (cartQuantity != null) {
-        popularItem.quantity = cartQuantity;
-      } else {
-        popularItem.quantity = 0;
+    if (_popularItemList != null) {
+      for (final popularItem in _popularItemList) {
+        final cartQuantity = cartQuantities[popularItem.id];
+        if (cartQuantity != null) {
+          popularItem.quantity = cartQuantity;
+        } else {
+          popularItem.quantity = 0;
+        }
       }
     }
   }
@@ -604,12 +606,14 @@ class ItemController extends GetxController implements GetxService {
       cartQuantities[cartItem.item.id] = cartItem.quantity;
     }
 
-    for (final reviewedItem in _reviewedItemList) {
-      final cartQuantity = cartQuantities[reviewedItem.id];
-      if (cartQuantity != null) {
-        reviewedItem.quantity = cartQuantity;
-      } else {
-        reviewedItem.quantity = 0;
+    if (_reviewedItemList != null) {
+      for (final reviewedItem in _reviewedItemList) {
+        final cartQuantity = cartQuantities[reviewedItem.id];
+        if (cartQuantity != null) {
+          reviewedItem.quantity = cartQuantity;
+        } else {
+          reviewedItem.quantity = 0;
+        }
       }
     }
   }
