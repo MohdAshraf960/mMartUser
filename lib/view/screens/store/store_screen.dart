@@ -161,6 +161,7 @@ class _StoreScreenState extends State<StoreScreen> {
                                 ),*/
                                   ),
                               actions: [
+                                SizedBox()
                                 // IconButton(
                                 //   onPressed: () => Get.toNamed(RouteHelper.getSearchStoreItemRoute(_store.id)),
                                 //   icon: Container(

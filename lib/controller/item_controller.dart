@@ -76,7 +76,7 @@ class ItemController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _popularItemList = [];
         _popularItemList.addAll(ItemModel.fromJson(response.body).items);
-
+        setAllItems();
         _isLoading = false;
       } else {
         ApiChecker.checkApi(response);
@@ -98,7 +98,7 @@ class ItemController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _reviewedItemList = [];
         _reviewedItemList.addAll(ItemModel.fromJson(response.body).items);
-
+        setAllItems();
         _isLoading = false;
       } else {
         ApiChecker.checkApi(response);
@@ -458,41 +458,41 @@ class ItemController extends GetxController implements GetxService {
                   backgroundColor: Colors.transparent, isScrollControlled: true, isDismissible: false)
               .then((value) {
               log("$value", name: "BOTTOM SHEET");
-              int index = storeItems.indexWhere((store) => store.id == item.id);
+              //   int index = storeItems.indexWhere((store) => store.id == item.id);
 
-              if (value != null) {
-                localQuantity = value;
-                if (storeItems.isNotEmpty && inStore) {
-                  storeItems[index].quantity = value;
-                  final Map<int, int> cartQuantities = {};
-                  for (final cartItem in cartController.cartList) {
-                    cartQuantities[cartItem.item.id] = cartItem.quantity;
-                  }
-                  for (final storeItem in storeItems) {
-                    final cartQuantity = cartQuantities[storeItem.id];
-                    if (cartQuantity != null) {
-                      storeItem.quantity = cartQuantity;
-                    }
-                  }
-                } else {
-                  if (fromCategory) {
-                    setCategoryList(value, item);
-                  } else {
-                    setPopularAndReviewList(isPopular, value, item);
-                  }
-                }
-              } else {
-                localQuantity = 0;
-                if (storeItems.isNotEmpty && inStore) {
-                  storeItems[index].quantity = 0;
-                } else {
-                  if (fromCategory) {
-                    setCategoryList(0, item);
-                  } else {
-                    setPopularAndReviewList(isPopular, 0, item);
-                  }
-                }
-              }
+              // if (value != null) {
+              //   localQuantity = value;
+              //   if (storeItems.isNotEmpty && inStore) {
+              //     storeItems[index].quantity = value;
+              //     final Map<int, int> cartQuantities = {};
+              //     for (final cartItem in cartController.cartList) {
+              //       cartQuantities[cartItem.item.id] = cartItem.quantity;
+              //     }
+              //     for (final storeItem in storeItems) {
+              //       final cartQuantity = cartQuantities[storeItem.id];
+              //       if (cartQuantity != null) {
+              //         storeItem.quantity = cartQuantity;
+              //       }
+              //     }
+              //   } else {
+              //     if (fromCategory) {
+              //       setCategoryList(value, item);
+              //     } else {
+              //       setPopularAndReviewList(isPopular, value, item);
+              //     }
+              //   }
+              // } else {
+              //   localQuantity = 0;
+              //   if (storeItems.isNotEmpty && inStore) {
+              //     storeItems[index].quantity = 0;
+              //   } else {
+              //     if (fromCategory) {
+              //       setCategoryList(0, item);
+              //     } else {
+              //       setPopularAndReviewList(isPopular, 0, item);
+              //     }
+              //   }
+              // }
               setAllItems();
               update();
             })
@@ -506,33 +506,32 @@ class ItemController extends GetxController implements GetxService {
                   ),
                   barrierDismissible: false)
               .then((value) {
-              int index = storeItems.indexWhere((store) => store.id == item.id);
-              if (value != null) {
-                localQuantity = value;
-                if (storeItems.isNotEmpty && inStore) {
-                  storeItems[index].quantity = value;
-                } else {
-                  if (fromCategory) {
-                    setCategoryList(value, item);
-                  } else {
-                    setPopularAndReviewList(isPopular, value, item);
-                  }
-                }
-              } else {
-                localQuantity = 0;
-                if (storeItems.isNotEmpty && inStore) {
-                  storeItems[index].quantity = 0;
-                } else {
-                  if (fromCategory) {
-                    setCategoryList(0, item);
-                  } else {
-                    setPopularAndReviewList(isPopular, 0, item);
-                  }
-                }
-              }
+              // int index = storeItems.indexWhere((store) => store.id == item.id);
+              // if (value != null) {
+              //   localQuantity = value;
+              //   if (storeItems.isNotEmpty && inStore) {
+              //     storeItems[index].quantity = value;
+              //   } else {
+              //     if (fromCategory) {
+              //       setCategoryList(value, item);
+              //     } else {
+              //       setPopularAndReviewList(isPopular, value, item);
+              //     }
+              //   }
+              // } else {
+              //   localQuantity = 0;
+              //   if (storeItems.isNotEmpty && inStore) {
+              //     storeItems[index].quantity = 0;
+              //   } else {
+              //     if (fromCategory) {
+              //       setCategoryList(0, item);
+              //     } else {
+              //       setPopularAndReviewList(isPopular, 0, item);
+              //     }
+              //   }
+              // }
 
-              checkCartForPopularList();
-              checkCartForReviewList();
+              setAllItems();
               update();
             });
     } else {
@@ -566,17 +565,17 @@ class ItemController extends GetxController implements GetxService {
 
   setCategoryList(int value, Item item) {
     if (Get.find<CategoryController>().categoryItemList != null) {
-      int index = Get.find<CategoryController>().categoryItemList.indexWhere((store) => store.id == item.id);
-      Get.find<CategoryController>().categoryItemList[index].quantity = value;
+      // int index = Get.find<CategoryController>().categoryItemList.indexWhere((store) => store.id == item.id);
+      // Get.find<CategoryController>().categoryItemList[index].quantity = value;
       final Map<int, int> cartQuantities = {};
       for (final cartItem in cartController.cartList) {
         cartQuantities[cartItem.item.id] = cartItem.quantity;
       }
 
-      for (final popularItem in Get.find<CategoryController>().categoryItemList) {
-        final cartQuantity = cartQuantities[popularItem.id];
+      for (final categoryItem in Get.find<CategoryController>().categoryItemList) {
+        final cartQuantity = cartQuantities[categoryItem.id];
         if (cartQuantity != null) {
-          popularItem.quantity = cartQuantity;
+          categoryItem.quantity = cartQuantity;
         }
       }
     }
@@ -588,12 +587,14 @@ class ItemController extends GetxController implements GetxService {
       cartQuantities[cartItem.item.id] = cartItem.quantity;
     }
 
-    for (final popularItem in _popularItemList) {
-      final cartQuantity = cartQuantities[popularItem.id];
-      if (cartQuantity != null) {
-        popularItem.quantity = cartQuantity;
-      } else {
-        popularItem.quantity = 0;
+    if (_popularItemList != null) {
+      for (final popularItem in _popularItemList) {
+        final cartQuantity = cartQuantities[popularItem.id];
+        if (cartQuantity != null) {
+          popularItem.quantity = cartQuantity;
+        } else {
+          popularItem.quantity = 0;
+        }
       }
     }
   }
@@ -604,12 +605,14 @@ class ItemController extends GetxController implements GetxService {
       cartQuantities[cartItem.item.id] = cartItem.quantity;
     }
 
-    for (final reviewedItem in _reviewedItemList) {
-      final cartQuantity = cartQuantities[reviewedItem.id];
-      if (cartQuantity != null) {
-        reviewedItem.quantity = cartQuantity;
-      } else {
-        reviewedItem.quantity = 0;
+    if (_reviewedItemList != null) {
+      for (final reviewedItem in _reviewedItemList) {
+        final cartQuantity = cartQuantities[reviewedItem.id];
+        if (cartQuantity != null) {
+          reviewedItem.quantity = cartQuantity;
+        } else {
+          reviewedItem.quantity = 0;
+        }
       }
     }
   }
@@ -657,5 +660,6 @@ class ItemController extends GetxController implements GetxService {
     checkCartForReviewList();
     checkCartForStoreItems();
     checkCartForSearchStoreItems();
+    update();
   }
 }
