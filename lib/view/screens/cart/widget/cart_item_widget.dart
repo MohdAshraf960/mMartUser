@@ -7,7 +7,7 @@ import 'package:sixam_mart/helper/responsive_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
 import 'package:sixam_mart/util/styles.dart';
 import 'package:sixam_mart/view/base/custom_image.dart';
-import 'package:sixam_mart/view/base/item_bottom_sheet.dart';
+
 import 'package:sixam_mart/view/base/quantity_button.dart';
 import 'package:sixam_mart/view/base/rating_bar.dart';
 import 'package:flutter/material.dart';
@@ -76,19 +76,19 @@ class CartItemWidget extends StatelessWidget {
       padding: EdgeInsets.only(bottom: Dimensions.PADDING_SIZE_DEFAULT),
       child: InkWell(
         onTap: () {
-          ResponsiveHelper.isMobile(context)
-              ? showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (con) => ItemBottomSheet(item: cart.item, cartIndex: cartIndex, cart: cart),
-                )
-              : showDialog(
-                  context: context,
-                  builder: (con) => Dialog(
-                    child: ItemBottomSheet(item: cart.item, cartIndex: cartIndex, cart: cart),
-                  ),
-                );
+          // ResponsiveHelper.isMobile(context)
+          //     ? showModalBottomSheet(
+          //         context: context,
+          //         isScrollControlled: true,
+          //         backgroundColor: Colors.transparent,
+          //         builder: (con) => ItemBottomSheet(item: cart.item, cartIndex: cartIndex, cart: cart),
+          //       )
+          //     : showDialog(
+          //         context: context,
+          //         builder: (con) => Dialog(
+          //           child: ItemBottomSheet(item: cart.item, cartIndex: cartIndex, cart: cart),
+          //         ),
+          //       );
         },
         child: Container(
           decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(Dimensions.RADIUS_SMALL)),

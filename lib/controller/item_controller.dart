@@ -161,7 +161,7 @@ class ItemController extends GetxController implements GetxService {
         item.choiceOptions.forEach((element) => _variationIndex.add(0));
       }
       if (item != null) {
-        if (item.quantity.isGreaterThan(1)) {
+        if (item.quantity > 1) {
           _quantity = item.quantity;
         } else {
           _quantity = 1;
