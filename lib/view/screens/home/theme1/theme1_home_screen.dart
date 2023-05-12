@@ -122,41 +122,43 @@ class Theme1HomeScreen extends StatelessWidget {
             ? SliverPersistentHeader(
                 pinned: true,
                 delegate: SliverDelegate(
-                    child: Center(
-                        child: Container(
-                  height: 50,
-                  width: Dimensions.WEB_MAX_WIDTH,
-                  color: Theme.of(context).colorScheme.background,
-                  padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
-                  child: InkWell(
-                    onTap: () => Get.toNamed(RouteHelper.getSearchRoute()),
+                  child: Center(
                     child: Container(
+                      height: 50,
+                      width: Dimensions.WEB_MAX_WIDTH,
+                      color: Theme.of(context).colorScheme.background,
                       padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
-                      ),
-                      child: Row(children: [
-                        SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        Icon(
-                          Icons.search,
-                          size: 25,
-                          color: Theme.of(context).hintColor,
-                        ),
-                        SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
-                        Expanded(
-                            child: Text(
-                          Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText ? 'search_food_or_restaurant'.tr : 'search_item_or_store'.tr,
-                          style: robotoRegular.copyWith(
-                            fontSize: Dimensions.fontSizeSmall,
-                            color: Theme.of(context).hintColor,
+                      child: InkWell(
+                        onTap: () => Get.toNamed(RouteHelper.getSearchRoute()),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: Dimensions.PADDING_SIZE_SMALL),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(25),
+                            boxShadow: [BoxShadow(color: Colors.grey[Get.isDarkMode ? 800 : 200], spreadRadius: 1, blurRadius: 5)],
                           ),
-                        )),
-                      ]),
+                          child: Row(children: [
+                            SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                            Icon(
+                              Icons.search,
+                              size: 25,
+                              color: Theme.of(context).hintColor,
+                            ),
+                            SizedBox(width: Dimensions.PADDING_SIZE_EXTRA_SMALL),
+                            Expanded(
+                                child: Text(
+                              Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText ? 'search_food_or_restaurant'.tr : 'search_item_or_store'.tr,
+                              style: robotoRegular.copyWith(
+                                fontSize: Dimensions.fontSizeSmall,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            )),
+                          ]),
+                        ),
+                      ),
                     ),
                   ),
-                ))),
+                ),
               )
             : SliverToBoxAdapter(),
 
