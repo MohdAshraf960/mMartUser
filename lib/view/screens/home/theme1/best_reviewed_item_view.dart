@@ -2,11 +2,15 @@ import 'package:sixam_mart/controller/cart_controller.dart';
 import 'package:sixam_mart/controller/item_controller.dart';
 import 'package:sixam_mart/controller/splash_controller.dart';
 import 'package:sixam_mart/controller/theme_controller.dart';
+import 'package:sixam_mart/data/model/response/cart_model.dart';
 import 'package:sixam_mart/data/model/response/item_model.dart';
 import 'package:sixam_mart/helper/price_converter.dart';
 import 'package:sixam_mart/helper/route_helper.dart';
 import 'package:sixam_mart/util/dimensions.dart';
+import 'package:sixam_mart/util/images.dart';
 import 'package:sixam_mart/util/styles.dart';
+import 'package:sixam_mart/view/base/cart_snackbar.dart';
+import 'package:sixam_mart/view/base/confirmation_dialog.dart';
 import 'package:sixam_mart/view/base/custom_image.dart';
 import 'package:sixam_mart/view/base/discount_tag.dart';
 import 'package:sixam_mart/view/base/not_available_widget.dart';
@@ -15,6 +19,7 @@ import 'package:sixam_mart/view/base/title_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:get/get.dart';
+import 'package:sixam_mart/view/screens/checkout/checkout_screen.dart';
 
 class BestReviewedItemView extends StatelessWidget {
   @override
@@ -175,12 +180,60 @@ class BestReviewedItemView extends StatelessWidget {
                                               QuantityButton(
                                                 isIncrement: true,
                                                 onTap: () {
-                                                  // itemController.setItemQuantity(
-                                                  //   _itemList[index],
-                                                  //   true,
-                                                  //   _itemList[index].stock,
-                                                  // );
-                                                  Get.find<ItemController>().navigateToItemPage(_itemList[index], context, isPopular: false);
+                                                  int cartIndex;
+                                                  itemController.setItemQuantity(_itemList[index], true, _itemList[index].stock);
+                                                  int _stock = _itemList[index].stock ?? 0;
+                                                  double _discount = (_itemList[index].storeDiscount == 0) ? _itemList[index].discount : _itemList[index].storeDiscount;
+                                                  String _discountType = (_itemList[index].storeDiscount == 0) ? _itemList[index].discountType : 'percent';
+                                                  double priceWithDiscount = PriceConverter.convertWithDiscount(_itemList[index].price, _discount, _discountType);
+                                                  Variation _variation;
+                                                  CartModel _cartModel = CartModel(
+                                                    _itemList[index].price,
+                                                    priceWithDiscount,
+                                                    _variation != null ? [_variation] : [],
+                                                    itemController.selectedVariations,
+                                                    (_itemList[index].price - PriceConverter.convertWithDiscount(_itemList[index].price, _discount, _discountType)),
+                                                    1,
+                                                    [],
+                                                    [],
+                                                    false,
+                                                    _stock,
+                                                    _itemList[index],
+                                                  );
+                                                  if (false) {
+                                                    Get.toNamed(
+                                                      RouteHelper.getCheckoutRoute('campaign'),
+                                                      arguments: CheckoutScreen(
+                                                        storeId: null,
+                                                        fromCart: false,
+                                                        cartList: [_cartModel],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    if (Get.find<CartController>().existAnotherStoreItem(_cartModel.item.storeId, Get.find<SplashController>().module.id)) {
+                                                      Get.dialog(
+                                                          ConfirmationDialog(
+                                                            icon: Images.warning,
+                                                            title: 'are_you_sure_to_reset'.tr,
+                                                            description: Get.find<SplashController>().configModel.moduleConfig.module.showRestaurantText
+                                                                ? 'if_you_continue'.tr
+                                                                : 'if_you_continue_without_another_store'.tr,
+                                                            onYesPressed: () {
+                                                              Get.back();
+                                                              Get.find<CartController>().removeAllAndAddToCart(_cartModel);
+                                                              showCartSnackBar(context);
+                                                            },
+                                                          ),
+                                                          barrierDismissible: false);
+                                                    } else {
+                                                      Get.find<CartController>().addToCart(
+                                                        _cartModel,
+                                                        cartIndex != null ? cartIndex : itemController.cartIndex,
+                                                      );
+                                                      showCartSnackBar(context);
+                                                    }
+                                                    Get.find<ItemController>().setAllItems();
+                                                  }
                                                 },
                                               ),
                                             ],
